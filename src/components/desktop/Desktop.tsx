@@ -5,11 +5,13 @@ import Taskbar from '../taskbar/Taskbar';
 import Clippy from '../clippy/Clippy';
 import ContextMenu from './ContextMenu';
 import WallpaperEngine from './WallpaperEngine';
+import { useViewCount } from '../../hooks/useViewCount';
 
 export default function Desktop() {
   const [contextMenu, setContextMenu] = useState<{x: number, y: number} | null>(null);
+  const { count, loading } = useViewCount();
 
-  const handleContextMenu = (e: React.MouseEvent | any) => {
+  const handleContextMenu = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest('.win95-window, .taskbar, .clippy-window')) {
       return; // Do not override context menu if clicking inside a window/taskbar
     }
@@ -55,7 +57,6 @@ export default function Desktop() {
           href="https://linkedin.com/in/aryan-dubey-9b2271357/"
           target="_blank"
           rel="noopener noreferrer"
-          referrerPolicy="no-referrer"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -70,6 +71,13 @@ export default function Desktop() {
         >
           🔗 LinkedIn
         </a>
+        {/* View counter — pushed to the right */}
+        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ fontSize: 14, opacity: 0.8 }}>👁</span>
+          <span style={{ color: 'hsl(0 0% 65%)', fontSize: 12 }}>
+            {loading ? 'loading…' : count !== null ? `${count.toLocaleString()} visits` : '—'}
+          </span>
+        </div>
       </div>
 
       {/* Wallpaper Layer */}

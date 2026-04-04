@@ -29,13 +29,9 @@ export default function LandingScreen({ onEnter, onPlayTetris }: Props) {
         {/* ASCII Art Name */}
         <pre className="ascii-art" style={{
           color: 'hsl(120 100% 54%)',
-          fontSize: 8,
+          fontSize: 'clamp(6px, 1.8vw, 9px)',
           lineHeight: 1.15,
-          fontFamily: "'VT323', monospace",
           marginBottom: 24,
-          overflow: 'hidden',
-          whiteSpace: 'pre',
-          textAlign: 'center',
         }}>
           {ASCII_NAME}
         </pre>

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useState, useRef, useCallback, type ReactNode } from 'react';
 import type { WindowState } from '../types';
 
 const WINDOW_CONFIGS: Record<string, { title: string; icon: string; defaultSize: { width: number; height: number }; defaultPosition: { x: number; y: number } }> = {
@@ -21,6 +21,27 @@ const WINDOW_CONFIGS: Record<string, { title: string; icon: string; defaultSize:
   minesweeper:  { title: 'MINESWEEPER.EXE', icon: '💣', defaultSize: { width: 280, height: 350 }, defaultPosition: { x: 150, y: 150 } },
 };
 
+/**
+ * Clamp a window's spawn position so it's never fully off-screen.
+ * Accounts for the top bar (32px) and taskbar (40px).
+ */
+function clampPosition(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+): { x: number; y: number } {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const TOPBAR = 32;
+  const TASKBAR = 40;
+  const MARGIN = 40; // keep at least this many px visible
+
+  const clampedX = Math.max(0, Math.min(x, vw - Math.min(width, MARGIN)));
+  const clampedY = Math.max(TOPBAR, Math.min(y, vh - TASKBAR - Math.min(height, MARGIN)));
+  return { x: clampedX, y: clampedY };
+}
+
 interface WindowContextType {
   windows: WindowState[];
   openWindow: (appId: string) => void;
@@ -33,26 +54,29 @@ interface WindowContextType {
 
 const WindowContext = createContext<WindowContextType | null>(null);
 
-let zCounter = 10;
-
 export function WindowProvider({ children }: { children: ReactNode }) {
   const [windows, setWindows] = useState<WindowState[]>([]);
+  // useRef keeps zCounter stable across HMR cycles — avoids phantom z-index drift
+  const zCounter = useRef(10);
 
   const openWindow = useCallback((appId: string) => {
     setWindows(prev => {
       const existing = prev.find(w => w.appId === appId);
       if (existing) {
-        zCounter++;
+        zCounter.current++;
         return prev.map(w =>
           w.appId === appId
-            ? { ...w, isOpen: true, isMinimized: false, isFocused: true, zIndex: zCounter }
+            ? { ...w, isOpen: true, isMinimized: false, isFocused: true, zIndex: zCounter.current }
             : { ...w, isFocused: false }
         );
       }
       const config = WINDOW_CONFIGS[appId];
       if (!config) return prev;
-      zCounter++;
+      zCounter.current++;
       const jitter = prev.length * 20;
+      const spawnX = config.defaultPosition.x + jitter;
+      const spawnY = config.defaultPosition.y + jitter;
+      const { x, y } = clampPosition(spawnX, spawnY, config.defaultSize.width, config.defaultSize.height);
       const newWindow: WindowState = {
         id: `win-${appId}-${Date.now()}`,
         appId,
@@ -60,8 +84,8 @@ export function WindowProvider({ children }: { children: ReactNode }) {
         isOpen: true,
         isMinimized: false,
         isFocused: true,
-        zIndex: zCounter,
-        position: { x: config.defaultPosition.x + jitter, y: config.defaultPosition.y + jitter },
+        zIndex: zCounter.current,
+        position: { x, y },
         size: config.defaultSize,
         icon: config.icon,
       };
@@ -80,9 +104,9 @@ export function WindowProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const focusWindow = useCallback((id: string) => {
-    zCounter++;
+    zCounter.current++;
     setWindows(prev => prev.map(w =>
-      w.id === id ? { ...w, isFocused: true, zIndex: zCounter } : { ...w, isFocused: false }
+      w.id === id ? { ...w, isFocused: true, zIndex: zCounter.current } : { ...w, isFocused: false }
     ));
   }, []);
 
@@ -91,9 +115,9 @@ export function WindowProvider({ children }: { children: ReactNode }) {
       const win = prev.find(w => w.id === id);
       if (!win) return prev;
       if (win.isMinimized) {
-        zCounter++;
+        zCounter.current++;
         return prev.map(w =>
-          w.id === id ? { ...w, isMinimized: false, isFocused: true, zIndex: zCounter } : { ...w, isFocused: false }
+          w.id === id ? { ...w, isMinimized: false, isFocused: true, zIndex: zCounter.current } : { ...w, isFocused: false }
         );
       }
       if (win.isFocused) {
@@ -101,9 +125,9 @@ export function WindowProvider({ children }: { children: ReactNode }) {
           w.id === id ? { ...w, isMinimized: true, isFocused: false } : w
         );
       }
-      zCounter++;
+      zCounter.current++;
       return prev.map(w =>
-        w.id === id ? { ...w, isFocused: true, zIndex: zCounter } : { ...w, isFocused: false }
+        w.id === id ? { ...w, isFocused: true, zIndex: zCounter.current } : { ...w, isFocused: false }
       );
     });
   }, []);
@@ -127,3 +151,4 @@ export function useWindows() {
   if (!ctx) throw new Error('useWindows must be inside WindowProvider');
   return ctx;
 }
+

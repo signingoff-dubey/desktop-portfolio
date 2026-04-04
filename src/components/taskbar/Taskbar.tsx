@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useWindows } from '../../context/WindowContext';
 import { useSettings } from '../../context/SettingsContext';
-import StartMenu from '../taskbar/StartMenu';
+import StartMenu from './StartMenu';
+import { useViewCount } from '../../hooks/useViewCount';
 
 const TAB_LABELS: Record<string, string> = {
   terminal: 'TERM',
@@ -27,6 +28,7 @@ export default function Taskbar() {
   const { osStyle } = useSettings();
   const [time, setTime] = useState('');
   const [startOpen, setStartOpen] = useState(false);
+  const { count, loading } = useViewCount();
 
   useEffect(() => {
     const tick = () => {
@@ -143,7 +145,9 @@ export default function Taskbar() {
         {/* Right side */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0, paddingRight: 8 }}>
           <span style={{ fontSize: 14, color: 'hsl(0 0% 70%)' }}>🔊</span>
-          <span style={{ fontSize: 13, color: 'hsl(0 0% 75%)' }}>👤 #1453</span>
+          <span style={{ fontSize: 13, color: 'hsl(0 0% 75%)' }}>
+            {loading ? '👁 …' : count !== null ? `👁 ${count.toLocaleString()} views` : '👁 —'}
+          </span>
           <span style={{ fontSize: 14, color: 'hsl(120 100% 54%)', minWidth: 90, textAlign: 'right' }}>{time}</span>
         </div>
       </div>
