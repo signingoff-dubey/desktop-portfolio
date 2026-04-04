@@ -1,0 +1,454 @@
+@import "tailwindcss";
+
+/* ===== DESIGN TOKENS (HSL CSS Variables) ===== */
+@theme {
+  --color-bsod-blue: hsl(240 100% 33%);
+  --color-pure-blue: hsl(240 100% 50%);
+  --color-window-bg: hsl(240 100% 27%);
+  --color-phosphor-green: hsl(120 100% 54%);
+  --color-phosphor-white: hsl(0 0% 88%);
+  --color-log-yellow: hsl(60 100% 50%);
+  --color-muted-blue: hsl(240 100% 73%);
+  --color-dark-blue: hsl(240 100% 20%);
+  --color-card-bg: hsl(240 100% 27%);
+  --color-taskbar-bg: hsl(240 100% 22%);
+  --color-title-bar: hsl(240 100% 40%);
+  --color-title-bar-inactive: hsl(240 100% 30%);
+  --color-border-light: hsl(240 60% 60%);
+  --color-border-dark: hsl(240 100% 15%);
+}
+
+/* ===== THEMES ===== */
+html[data-theme="amber"] {
+  --color-bsod-blue: hsl(40 10% 5%);
+  --color-window-bg: hsl(40 10% 8%);
+  --color-phosphor-green: hsl(40 100% 50%);
+  --color-dark-blue: hsl(40 10% 12%);
+  --color-card-bg: hsl(40 10% 10%);
+  --color-taskbar-bg: hsl(40 10% 8%);
+  --color-title-bar: hsl(40 80% 40%);
+  --color-title-bar-inactive: hsl(40 50% 20%);
+  --color-border-light: hsl(40 40% 40%);
+  --color-border-dark: hsl(40 10% 4%);
+}
+
+html[data-theme="white"] {
+  --color-bsod-blue: hsl(0 0% 15%);
+  --color-window-bg: hsl(0 0% 20%);
+  --color-phosphor-green: hsl(0 0% 90%);
+  --color-dark-blue: hsl(0 0% 25%);
+  --color-card-bg: hsl(0 0% 22%);
+  --color-taskbar-bg: hsl(0 0% 18%);
+  --color-title-bar: hsl(0 0% 40%);
+  --color-title-bar-inactive: hsl(0 0% 30%);
+  --color-border-light: hsl(0 0% 50%);
+  --color-border-dark: hsl(0 0% 10%);
+}
+
+html[data-theme="matrix"] {
+  --color-bsod-blue: hsl(120 100% 5%);
+  --color-window-bg: hsl(120 100% 8%);
+  --color-phosphor-green: hsl(120 100% 50%);
+  --color-dark-blue: hsl(120 100% 12%);
+  --color-card-bg: hsl(120 100% 10%);
+  --color-taskbar-bg: hsl(120 100% 8%);
+  --color-title-bar: hsl(120 100% 20%);
+  --color-title-bar-inactive: hsl(120 100% 12%);
+  --color-border-light: hsl(120 50% 40%);
+  --color-border-dark: hsl(120 100% 4%);
+}
+
+html[data-theme="vaporwave"] {
+  --color-bsod-blue: hsl(280, 100%, 15%);
+  --color-window-bg: hsl(280, 80%, 12%);
+  --color-phosphor-green: hsl(320, 100%, 65%);
+  --color-log-yellow: hsl(180, 100%, 60%);
+  --color-dark-blue: hsl(260, 100%, 8%);
+  --color-card-bg: hsl(280, 60%, 15%);
+  --color-taskbar-bg: hsl(300, 70%, 10%);
+  --color-title-bar: hsl(320, 80%, 40%);
+  --color-title-bar-inactive: hsl(280, 70%, 20%);
+  --color-border-light: hsl(320, 100%, 75%);
+  --color-border-dark: hsl(260, 100%, 4%);
+}
+
+/* ===== GLOBAL RESETS ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, button, input, textarea, select {
+  font-family: var(--sys-font, 'VT323', monospace);
+}
+
+html[data-os="mac"] {
+  --sys-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+html[data-os="win11"] {
+  --sys-font: "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--color-bsod-blue);
+  color: var(--color-phosphor-white);
+  font-size: 16px;
+}
+
+/* ===== OS STYLE OVERRIDES ===== */
+html[data-os="mac"] .crt-overlay::after,
+html[data-os="mac"] .crt-flicker,
+html[data-os="win11"] .crt-overlay::after,
+html[data-os="win11"] .crt-flicker {
+  display: none !important;
+  animation: none !important;
+}
+
+/* ===== CRT SCANLINE OVERLAY ===== */
+.crt-overlay {
+  position: relative;
+}
+
+.crt-overlay::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.12) 0px,
+    rgba(0, 0, 0, 0.12) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ===== WINDOW CHROME (Win95 Style) ===== */
+.win95-window {
+  background: var(--color-window-bg);
+  border: 2px solid;
+  border-color: var(--color-border-light) var(--color-border-dark) var(--color-border-dark) var(--color-border-light);
+  box-shadow: 
+    inset 1px 1px 0 var(--color-border-light),
+    inset -1px -1px 0 var(--color-border-dark),
+    2px 2px 8px rgba(0,0,0,0.5);
+}
+
+.win95-title-bar {
+  background: var(--color-title-bar);
+  padding: 3px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: default;
+  user-select: none;
+}
+
+.win95-title-bar.inactive {
+  background: var(--color-title-bar-inactive);
+}
+
+.win95-title-bar .title-text {
+  color: white;
+  font-size: 14px;
+  font-weight: normal;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.win95-btn {
+  width: 18px;
+  height: 18px;
+  background: hsl(240 20% 75%);
+  border: 1.5px solid;
+  border-color: hsl(0 0% 95%) hsl(240 20% 30%) hsl(240 20% 30%) hsl(0 0% 95%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 11px;
+  color: black;
+  padding: 0;
+  line-height: 1;
+}
+
+.win95-btn:active {
+  border-color: hsl(240 20% 30%) hsl(0 0% 95%) hsl(0 0% 95%) hsl(240 20% 30%);
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+  width: 14px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(240 100% 20%);
+  border-left: 1px solid hsl(240 60% 50%);
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(240 40% 55%);
+  border: 1.5px solid;
+  border-color: hsl(240 40% 75%) hsl(240 40% 30%) hsl(240 40% 30%) hsl(240 40% 75%);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(240 40% 65%);
+}
+
+/* ===== BLINKING CURSOR ===== */
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.cursor-blink {
+  animation: blink 1s step-end infinite;
+}
+
+/* ===== CRT FLICKER ===== */
+@keyframes crt-flicker {
+  0% { opacity: 0.97; }
+  5% { opacity: 0.95; }
+  10% { opacity: 0.98; }
+  15% { opacity: 0.96; }
+  100% { opacity: 0.97; }
+}
+
+.crt-flicker {
+  animation: crt-flicker 0.15s infinite;
+}
+
+/* ===== TYPEWRITER EFFECT ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* ===== DESKTOP ICON HOVER ===== */
+.desktop-icon {
+  cursor: pointer;
+  transition: background 0.15s ease;
+  user-select: none;
+  border: 1px solid transparent;
+  border-radius: 2px;
+}
+
+.desktop-icon:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.desktop-icon.selected {
+  background: rgba(0, 0, 168, 0.6);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* ===== START MENU ===== */
+.start-menu {
+  background: var(--color-window-bg);
+  border: 2px solid;
+  border-color: var(--color-border-light) var(--color-border-dark) var(--color-border-dark) var(--color-border-light);
+  box-shadow: 2px -2px 8px rgba(0,0,0,0.5);
+}
+
+.start-menu-item {
+  padding: 6px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  color: var(--color-phosphor-white);
+  transition: background 0.1s;
+}
+
+.start-menu-item:hover {
+  background: var(--color-title-bar);
+  color: white;
+}
+
+/* ===== TASKBAR ===== */
+.taskbar {
+  background: var(--color-taskbar-bg);
+  border-top: 2px solid;
+  border-color: var(--color-border-light);
+  box-shadow: 0 -1px 0 var(--color-border-light);
+}
+
+.taskbar-tab {
+  background: var(--color-window-bg);
+  border: 1.5px solid;
+  border-color: hsl(240 60% 60%) hsl(240 100% 15%) hsl(240 100% 15%) hsl(240 60% 60%);
+  padding: 2px 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--color-phosphor-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+  transition: background 0.1s;
+}
+
+.taskbar-tab:hover {
+  background: hsl(240 100% 35%);
+}
+
+.taskbar-tab.active {
+  border-color: hsl(240 100% 15%) hsl(240 60% 60%) hsl(240 60% 60%) hsl(240 100% 15%);
+  background: hsl(240 100% 33%);
+}
+
+/* ===== LANDING SCREEN ===== */
+.landing-card {
+  background: hsl(240 100% 28%);
+  border: 2px solid hsl(240 60% 50%);
+  box-shadow: 
+    inset 0 0 30px rgba(0, 0, 0, 0.3),
+    0 0 40px rgba(0, 0, 168, 0.4);
+}
+
+.landing-btn {
+  border: 1.5px solid hsl(240 60% 55%);
+  background: transparent;
+  color: var(--color-phosphor-green);
+  padding: 12px 32px;
+  font-size: 18px;
+  cursor: pointer;
+  font-family: 'VT323', monospace;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.landing-btn:hover {
+  background: rgba(20, 255, 20, 0.08);
+  border-color: var(--color-phosphor-green);
+  box-shadow: 0 0 12px rgba(20, 255, 20, 0.15);
+}
+
+/* ===== CLIPPY ===== */
+.clippy-window {
+  background: hsl(0 0% 90%);
+  border: 2px solid;
+  border-color: hsl(0 0% 98%) hsl(0 0% 50%) hsl(0 0% 50%) hsl(0 0% 98%);
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+  color: #333;
+}
+
+.clippy-title-bar {
+  background: linear-gradient(90deg, hsl(240 100% 40%), hsl(240 100% 55%));
+  padding: 2px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.clippy-btn {
+  padding: 3px 10px;
+  background: hsl(0 0% 85%);
+  border: 1.5px solid;
+  border-color: hsl(0 0% 98%) hsl(0 0% 50%) hsl(0 0% 50%) hsl(0 0% 98%);
+  cursor: pointer;
+  font-family: 'VT323', monospace;
+  font-size: 13px;
+  color: #333;
+}
+
+.clippy-btn:hover {
+  background: hsl(0 0% 78%);
+}
+
+/* ===== PROJECT CARD ===== */
+.project-card {
+  background: hsl(240 100% 25%);
+  border: 1.5px solid hsl(240 60% 50%);
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.project-card:hover {
+  background: hsl(240 100% 30%);
+  border-color: var(--color-phosphor-green);
+  box-shadow: 0 0 12px rgba(20, 255, 20, 0.1);
+}
+
+/* ===== TIMELINE ===== */
+.timeline-line {
+  position: absolute;
+  left: 7px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: hsl(240 60% 50%);
+}
+
+.timeline-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-phosphor-green);
+  border: 2px solid var(--color-bsod-blue);
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+/* ===== TOP BAR ===== */
+.top-bar {
+  background: rgba(0, 0, 100, 0.7);
+  backdrop-filter: blur(4px);
+  border-bottom: 1px solid hsl(240 60% 40%);
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  /* Hide retro OS elements */
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .no-print, .taskbar, .top-bar, .win95-title-bar, .desktop-icon, .crt-overlay::after {
+    display: none !important;
+  }
+  
+  #root, .win95-window, .printable-resume, .resume-container {
+    position: static !important;
+    box-shadow: none !important;
+    border: none !important;
+    width: 100% !important;
+    height: auto !important;
+    transform: none !important;
+    background: white !important;
+    color: black !important;
+    overflow: visible !important;
+  }
+
+  .printable-resume {
+    font-family: inherit; /* Remove VT323 for professional PDF or keep it if preferred - keeping VT323 is fine since it's retro portfolio */
+  }
+
+  /* Force dark text on print */
+  .printable-resume h1, 
+  .printable-resume h2, 
+  .printable-resume div, 
+  .printable-resume p, 
+  .printable-resume span {
+    color: black !important;
+  }
+}
