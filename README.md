@@ -77,23 +77,24 @@ npm run build
 
 ## 📁 Project Structure
 
-```
+```text
+public/
+└── gallery/           # High-resolution image assets for the Gallery app
 src/
 ├── components/
-│   ├── apps/          # All portfolio app windows (Terminal, Projects, etc.)
+│   ├── apps/          # Portfolio Windows (Gallery, Terminal, Desktop, Tetris, Minesweeper, etc.)
 │   ├── boot/          # Boot animation screen
 │   ├── clippy/        # Clippy assistant
 │   ├── desktop/       # Desktop, icon grid, wallpaper engine, context menu
 │   ├── landing/       # Landing / splash screen
-│   ├── mobile/        # Mobile layout + bottom sheet panel
 │   ├── taskbar/       # Taskbar + Start menu
 │   └── window/        # Window chrome, drag logic, WindowManager
 ├── context/
 │   ├── SettingsContext.tsx   # Theme · wallpaper · OS style · boot mode
 │   ├── WindowContext.tsx     # Window state, z-index, position clamping
-│   └── ThemeController.ts   # Named theme presets
-├── data/              # Static content (icons, achievements, tips, etc.)
-├── hooks/             # useIsMobile, useViewCount
+│   └── ThemeController.ts    # Named theme presets
+├── data/              # Static content (icons, achievements, tips, timeline, etc.)
+├── hooks/             # useViewCount
 └── types/             # Shared TypeScript interfaces
 ```
 

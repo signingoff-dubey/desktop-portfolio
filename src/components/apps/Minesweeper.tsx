@@ -181,6 +181,22 @@ export default function Minesweeper() {
           </div>
         ))}
       </div>
+
+      <button 
+        onClick={initGrid}
+        style={{ 
+          marginTop: 12, 
+          background: 'var(--color-taskbar-bg)', 
+          color: 'var(--color-phosphor-white)', 
+          border: '1px solid var(--color-border-light)', 
+          padding: '6px 16px', 
+          cursor: 'pointer', 
+          fontFamily: "'VT323', monospace", 
+          fontSize: 16
+        }}
+      >
+        RESTART
+      </button>
     </div>
   );
 }

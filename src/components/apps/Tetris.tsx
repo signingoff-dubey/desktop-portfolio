@@ -105,30 +105,36 @@ export default function Tetris() {
     return () => clearInterval(intervalRef.current);
   }, [drop, running, gameOver]);
 
+  const handleAction = useCallback((action: string) => {
+    if (gameOver || !running) return;
+    setPiece(prev => {
+      switch (action) {
+        case 'ArrowLeft':
+          return collides(boardRef.current, prev.shape, prev.x - 1, prev.y) ? prev : { ...prev, x: prev.x - 1 };
+        case 'ArrowRight':
+          return collides(boardRef.current, prev.shape, prev.x + 1, prev.y) ? prev : { ...prev, x: prev.x + 1 };
+        case 'ArrowDown':
+          return collides(boardRef.current, prev.shape, prev.x, prev.y + 1) ? prev : { ...prev, y: prev.y + 1 };
+        case 'ArrowUp': {
+          const rotated = rotate(prev.shape);
+          return collides(boardRef.current, rotated, prev.x, prev.y) ? prev : { ...prev, shape: rotated };
+        }
+        default: return prev;
+      }
+    });
+  }, [gameOver, running]);
+
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
-      if (gameOver || !running) return;
-      e.preventDefault();
-      setPiece(prev => {
-        switch (e.key) {
-          case 'ArrowLeft':
-            return collides(boardRef.current, prev.shape, prev.x - 1, prev.y) ? prev : { ...prev, x: prev.x - 1 };
-          case 'ArrowRight':
-            return collides(boardRef.current, prev.shape, prev.x + 1, prev.y) ? prev : { ...prev, x: prev.x + 1 };
-          case 'ArrowDown':
-            return collides(boardRef.current, prev.shape, prev.x, prev.y + 1) ? prev : { ...prev, y: prev.y + 1 };
-          case 'ArrowUp': {
-            const rotated = rotate(prev.shape);
-            return collides(boardRef.current, rotated, prev.x, prev.y) ? prev : { ...prev, shape: rotated };
-          }
-          default: return prev;
-        }
-      });
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        e.preventDefault();
+        handleAction(e.key);
+      }
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [gameOver, running]);
+  }, [handleAction]);
 
   const restart = () => {
     setBoard(createBoard());
@@ -183,7 +189,25 @@ export default function Tetris() {
         </div>
       )}
 
-      <div style={{ color: 'var(--color-phosphor-white)', fontSize: 12 }}>Arrow keys to play</div>
+      <div style={{ color: 'var(--color-phosphor-white)', fontSize: 13, marginTop: 4 }}>Touch or Arrow keys to play</div>
+
+      {/* Mobile Controls */}
+      <div className="no-print" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 44px)', gap: 8, marginTop: 4, justifyContent: 'center' }}>
+        <div />
+        <button 
+          onPointerDown={(e) => { e.preventDefault(); handleAction('ArrowUp'); }} 
+          style={{ background: 'var(--color-card-bg)', border: '1.5px solid var(--color-border-light)', color: 'white', height: 44, borderRadius: 4, cursor: 'pointer', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>↑</button>
+        <div />
+        <button 
+          onPointerDown={(e) => { e.preventDefault(); handleAction('ArrowLeft'); }} 
+          style={{ background: 'var(--color-card-bg)', border: '1.5px solid var(--color-border-light)', color: 'white', height: 44, borderRadius: 4, cursor: 'pointer', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>←</button>
+        <button 
+          onPointerDown={(e) => { e.preventDefault(); handleAction('ArrowDown'); }} 
+          style={{ background: 'var(--color-card-bg)', border: '1.5px solid var(--color-border-light)', color: 'white', height: 44, borderRadius: 4, cursor: 'pointer', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>↓</button>
+        <button 
+          onPointerDown={(e) => { e.preventDefault(); handleAction('ArrowRight'); }} 
+          style={{ background: 'var(--color-card-bg)', border: '1.5px solid var(--color-border-light)', color: 'white', height: 44, borderRadius: 4, cursor: 'pointer', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>→</button>
+      </div>
     </div>
   );
 }

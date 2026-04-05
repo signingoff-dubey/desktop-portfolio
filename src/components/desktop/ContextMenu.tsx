@@ -119,6 +119,9 @@ export default function ContextMenu({ x, y, onClose }: Props) {
             <div className="start-menu-item" style={itemStyle} onClick={(e) => { e.stopPropagation(); handleAction(() => openWindow('snake')); }}>
               <span>🐍</span> Snake
             </div>
+            <div className="start-menu-item" style={itemStyle} onClick={(e) => { e.stopPropagation(); handleAction(() => openWindow('minesweeper')); }}>
+              <span>💣</span> Minesweeper
+            </div>
           </div>
         )}
       </div>
