@@ -11,6 +11,14 @@ export default function ContextMenu({ x, y, onClose }: Props) {
   const { openWindow, closeWindow, windows } = useWindows();
   const menuRef = useRef<HTMLDivElement>(null);
   const [showGames, setShowGames] = useState(false);
+  const [menuSize, setMenuSize] = useState({ width: 200, height: 350 });
+
+  useEffect(() => {
+    if (menuRef.current) {
+      const rect = menuRef.current.getBoundingClientRect();
+      setMenuSize({ width: rect.width, height: rect.height });
+    }
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -27,8 +35,8 @@ export default function ContextMenu({ x, y, onClose }: Props) {
     onClose();
   };
 
-  const finalX = Math.min(x, window.innerWidth - 200);
-  const finalY = Math.min(y, window.innerHeight - 350);
+  const finalX = Math.max(0, Math.min(x, window.innerWidth - menuSize.width));
+  const finalY = Math.max(0, Math.min(y, window.innerHeight - menuSize.height));
 
   const menuStyle: React.CSSProperties = {
     position: 'absolute',
@@ -36,12 +44,12 @@ export default function ContextMenu({ x, y, onClose }: Props) {
     top: finalY,
     background: 'var(--color-window-bg, hsl(240 100% 27%))',
     border: '2px solid',
-    borderColor: 'hsl(120 100% 50%)',
+    borderColor: 'var(--color-border-light)',
     boxShadow: '4px 4px 0 rgba(0,0,0,0.5)',
     zIndex: 9999,
     minWidth: 200,
     padding: '4px 0',
-    color: 'var(--color-phosphor-white, #fff)',
+    color: 'var(--color-phosphor-white)',
     fontSize: 15,
   };
 
@@ -55,7 +63,7 @@ export default function ContextMenu({ x, y, onClose }: Props) {
 
   const sepStyle: React.CSSProperties = {
     height: 1,
-    background: 'hsl(120 100% 30%)',
+    background: 'var(--color-border-dark)',
     margin: '4px 8px',
   };
 
@@ -96,10 +104,11 @@ export default function ContextMenu({ x, y, onClose }: Props) {
         {showGames && (
           <div style={{
             position: 'absolute',
-            left: '100%',
+            left: finalX + menuSize.width > window.innerWidth ? 'auto' : '100%',
+            right: finalX + menuSize.width > window.innerWidth ? '100%' : 'auto',
             top: -2,
             background: 'var(--color-window-bg, hsl(240 100% 27%))',
-            border: '2px solid hsl(120 100% 50%)',
+            border: '2px solid var(--color-border-light)',
             boxShadow: '4px 4px 0 rgba(0,0,0,0.5)',
             minWidth: 150,
             padding: '4px 0',

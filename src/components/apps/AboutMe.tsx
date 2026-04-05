@@ -7,7 +7,7 @@ export default function AboutMe() {
         <img 
           src="/images/my image (banner size rectangle).jpg" 
           alt="Banner" 
-          style={{ width: '100%', height: 120, objectFit: 'cover', border: '1px solid hsl(0 0% 60%)' }} 
+          style={{ width: '100%', height: 120, objectFit: 'cover', border: '1px solid var(--color-border-light)' }} 
         />
       </div>
 
@@ -19,8 +19,8 @@ export default function AboutMe() {
           style={{
             width: 80, height: 90,
             objectFit: 'cover',
-            border: '1px solid hsl(0 0% 60%)',
-            background: 'hsl(0 0% 80%)'
+            border: '1px solid var(--color-border-light)',
+            background: 'var(--color-card-bg)'
           }} 
         />
         <div>

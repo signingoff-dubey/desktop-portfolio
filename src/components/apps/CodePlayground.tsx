@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
 const DEFAULT_CODE = `// Write JavaScript here!
 // Press RUN to execute.
 
-console.log("Hello from PY-OS! 🖥️");
+console.log("Hello from KABIR-OS! 🖥️");
 
 const greet = (name) => \`Welcome, \${name}!\`;
 console.log(greet("Visitor"));`;
@@ -11,68 +11,91 @@ console.log(greet("Visitor"));`;
 export default function CodePlayground() {
   const [code, setCode] = useState(DEFAULT_CODE);
   const [output, setOutput] = useState<string[]>([]);
+  const [running, setRunning] = useState(false);
+  const workerRef = useRef<Worker | null>(null);
 
-  const runCode = () => {
-    try {
-      const iframe = document.createElement('iframe');
-      // Create empty opaque origin (blocks localStorage, parent DOM, cookies)
-      iframe.setAttribute('sandbox', 'allow-scripts');
-      iframe.style.display = 'none';
-      
-      const htmlString = `
-        <script>
-          const logs = [];
-          console.log = (...args) => logs.push(args.map(String).join(' '));
-          console.error = (...args) => logs.push('ERROR: ' + args.map(String).join(' '));
-          console.warn = (...args) => logs.push('WARN: ' + args.map(String).join(' '));
-          
-          window.addEventListener('message', (event) => {
-             // Basic origin check (even opaque origins dispatch messages)
-             try {
-                eval(event.data);
-                event.source.postMessage({ type: 'output', logs }, '*');
-             } catch (err) {
-                event.source.postMessage({ type: 'error', error: err.message || String(err) }, '*');
-             }
-          });
-        </script>
-      `;
-      iframe.srcdoc = htmlString;
-      document.body.appendChild(iframe);
+  useEffect(() => {
+    return () => {
+      if (workerRef.current) {
+        workerRef.current.terminate();
+        workerRef.current = null;
+      }
+    };
+  }, []);
 
-      const handleMessage = (event: MessageEvent) => {
-        if (event.data?.type === 'output') {
-          setOutput(event.data.logs.length ? event.data.logs : ['(No output)']);
-        } else if (event.data?.type === 'error') {
-          setOutput(['Error: ' + event.data.error]);
-        }
-        if (document.body.contains(iframe)) document.body.removeChild(iframe);
-        window.removeEventListener('message', handleMessage);
-      };
-      
-      window.addEventListener('message', handleMessage);
-      
-      iframe.onload = () => {
-         iframe.contentWindow?.postMessage(code, '*');
-      };
+  const runCode = useCallback(() => {
+    if (running) return;
+    setRunning(true);
 
-      // 2000ms execution timeout to catch infinite while(true) loops
-      setTimeout(() => {
-        if (document.body.contains(iframe)) {
-          setOutput(['Error: Execution timed out (Possible infinite loop).']);
-          document.body.removeChild(iframe);
-          window.removeEventListener('message', handleMessage);
-        }
-      }, 2000);
-
-    } catch (err: unknown) {
-      setOutput([`Error: ${err instanceof Error ? err.message : String(err)}`]);
+    if (workerRef.current) {
+      workerRef.current.terminate();
     }
-  };
+
+    const workerBlob = new Blob(
+      [
+        `
+        const logs = [];
+        const _log = (...args) => logs.push(args.map(String).join(' '));
+        const _error = (...args) => logs.push('ERROR: ' + args.map(String).join(' '));
+        const _warn = (...args) => logs.push('WARN: ' + args.map(String).join(' '));
+
+        self.console = { log: _log, error: _error, warn: _warn, info: _log, debug: _log };
+
+        self.onmessage = (e) => {
+          try {
+            eval(e.data);
+            self.postMessage({ type: 'output', logs: logs.length ? logs : ['(No output)'] });
+          } catch (err) {
+            self.postMessage({ type: 'error', error: err.message || String(err) });
+          }
+        };
+        `,
+      ],
+      { type: 'application/javascript' }
+    );
+
+    const workerUrl = URL.createObjectURL(workerBlob);
+    const worker = new Worker(workerUrl);
+    workerRef.current = worker;
+
+    worker.onmessage = (e: MessageEvent) => {
+      if (e.data?.type === 'output') {
+        setOutput(e.data.logs);
+      } else if (e.data?.type === 'error') {
+        setOutput(['Error: ' + e.data.error]);
+      }
+      worker.terminate();
+      workerRef.current = null;
+      URL.revokeObjectURL(workerUrl);
+      setRunning(false);
+    };
+
+    worker.onerror = (err) => {
+      setOutput(['Error: ' + err.message]);
+      worker.terminate();
+      workerRef.current = null;
+      URL.revokeObjectURL(workerUrl);
+      setRunning(false);
+    };
+
+    const timeout = setTimeout(() => {
+      if (workerRef.current) {
+        setOutput(['Error: Execution timed out (Possible infinite loop).']);
+        worker.terminate();
+        workerRef.current = null;
+        URL.revokeObjectURL(workerUrl);
+        setRunning(false);
+      }
+    }, 2000);
+
+    worker.postMessage(code);
+
+    return () => clearTimeout(timeout);
+  }, [code, running]);
 
   return (
     <div style={{ fontSize: 14, display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <div style={{ color: 'hsl(120 100% 54%)', marginBottom: 8, fontSize: 15 }}>
+      <div style={{ color: 'var(--color-phosphor-green)', marginBottom: 8, fontSize: 15 }}>
         CODE_PLAYGROUND.JS — WRITE &amp; RUN JAVASCRIPT
       </div>
 
@@ -82,9 +105,9 @@ export default function CodePlayground() {
         style={{
           flex: 1,
           minHeight: 140,
-          background: 'hsl(240 100% 20%)',
-          color: 'hsl(0 0% 88%)',
-          border: '1px solid hsl(240 60% 45%)',
+          background: 'var(--color-dark-blue)',
+          color: 'var(--color-phosphor-white)',
+          border: '1px solid var(--color-border-light)',
           padding: 10,
           fontFamily: "'VT323', monospace",
           fontSize: 15,
@@ -97,12 +120,13 @@ export default function CodePlayground() {
       <div style={{ display: 'flex', gap: 8, margin: '8px 0' }}>
         <button
           onClick={runCode}
+          disabled={running}
           style={{
-            background: 'hsl(120 60% 30%)',
+            background: running ? 'hsl(60 60% 20%)' : 'hsl(120 60% 30%)',
             color: 'white',
             border: '1px solid hsl(120 60% 45%)',
             padding: '4px 16px',
-            cursor: 'pointer',
+            cursor: running ? 'wait' : 'pointer',
             fontFamily: "'VT323', monospace",
             fontSize: 15,
             display: 'flex',
@@ -110,14 +134,14 @@ export default function CodePlayground() {
             gap: 6,
           }}
         >
-          ▶ RUN
+          {running ? '⏳ RUNNING...' : '▶ RUN'}
         </button>
         <button
           onClick={() => { setOutput([]); setCode(DEFAULT_CODE); }}
           style={{
-            background: 'hsl(240 100% 27%)',
-            color: 'hsl(0 0% 75%)',
-            border: '1px solid hsl(240 60% 45%)',
+            background: 'var(--color-window-bg)',
+            color: 'var(--color-phosphor-white)',
+            border: '1px solid var(--color-border-light)',
             padding: '4px 16px',
             cursor: 'pointer',
             fontFamily: "'VT323', monospace",
@@ -130,14 +154,14 @@ export default function CodePlayground() {
 
       {output.length > 0 && (
         <div style={{
-          background: 'hsl(240 100% 18%)',
-          border: '1px solid hsl(240 60% 40%)',
+          background: 'var(--color-dark-blue)',
+          border: '1px solid var(--color-border-dark)',
           padding: 8,
           maxHeight: 120,
           overflow: 'auto',
         }}>
           {output.map((line, i) => (
-            <div key={i} style={{ color: line.startsWith('Error') ? 'hsl(0 70% 60%)' : 'hsl(0 0% 85%)' }}>
+            <div key={i} style={{ color: line.startsWith('Error') ? 'hsl(0 70% 60%)' : 'var(--color-phosphor-white)' }}>
               {line}
             </div>
           ))}

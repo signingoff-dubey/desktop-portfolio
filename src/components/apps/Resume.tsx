@@ -32,7 +32,7 @@ export default function Resume() {
           kabir.aryandubey@gmail.com | github.com/signingoff-dubey
         </div>
 
-        <h2 style={{ color: 'hsl(60 100% 50%)', borderBottom: '1px solid #555', marginTop: 20, marginBottom: 10, paddingBottom: 4 }}>[ EDUCATION ]</h2>
+        <h2 style={{ color: 'var(--color-log-yellow)', borderBottom: '1px solid var(--color-border-dark)', marginTop: 20, marginBottom: 10, paddingBottom: 4 }}>[ EDUCATION ]</h2>
         <div style={{ marginBottom: 12 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', color: 'white' }}>
             <span><strong>IIT Madras</strong> — B.S. in Data Science and AI</span>
@@ -52,7 +52,7 @@ export default function Resume() {
           </div>
         </div>
 
-        <h2 style={{ color: 'hsl(60 100% 50%)', borderBottom: '1px solid #555', marginTop: 20, marginBottom: 10, paddingBottom: 4 }}>[ EXPERIENCE ]</h2>
+        <h2 style={{ color: 'var(--color-log-yellow)', borderBottom: '1px solid var(--color-border-dark)', marginTop: 20, marginBottom: 10, paddingBottom: 4 }}>[ EXPERIENCE ]</h2>
         <div style={{ marginBottom: 16 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', color: 'white' }}>
             <span><strong>UI/UX Designer</strong> @ Hearthborn Studios</span>
@@ -73,7 +73,7 @@ export default function Resume() {
           </ul>
         </div>
 
-        <h2 style={{ color: 'hsl(60 100% 50%)', borderBottom: '1px solid #555', marginTop: 20, marginBottom: 10, paddingBottom: 4 }}>[ SKILLS ]</h2>
+        <h2 style={{ color: 'var(--color-log-yellow)', borderBottom: '1px solid var(--color-border-dark)', marginTop: 20, marginBottom: 10, paddingBottom: 4 }}>[ SKILLS ]</h2>
         <p><strong>Languages & Frameworks:</strong> Java, Python, Kotlin, C/C++, Flutter, React</p>
         <p><strong>Domains:</strong> Android Development, Machine Learning, AI Research, UI/UX</p>
       </div>

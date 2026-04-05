@@ -76,14 +76,16 @@ export default function Tetris() {
   const [running, setRunning] = useState(true);
   const intervalRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
 
+  const boardRef = useRef(board);
+  useEffect(() => { boardRef.current = board; }, [board]);
+
   const drop = useCallback(() => {
     if (gameOver || !running) return;
     setPiece(prev => {
-      if (!collides(board, prev.shape, prev.x, prev.y + 1)) {
+      if (!collides(boardRef.current, prev.shape, prev.x, prev.y + 1)) {
         return { ...prev, y: prev.y + 1 };
       }
-      // Lock
-      const newBoard = merge(board, prev.shape, prev.x, prev.y, prev.color);
+      const newBoard = merge(boardRef.current, prev.shape, prev.x, prev.y, prev.color);
       const { board: cleared, cleared: count } = clearRows(newBoard);
       setBoard(cleared);
       setScore(s => s + count * 100 + 10);
@@ -94,7 +96,7 @@ export default function Tetris() {
       }
       return next;
     });
-  }, [board, gameOver, running]);
+  }, [gameOver, running]);
 
   useEffect(() => {
     if (running && !gameOver) {
@@ -111,14 +113,14 @@ export default function Tetris() {
       setPiece(prev => {
         switch (e.key) {
           case 'ArrowLeft':
-            return collides(board, prev.shape, prev.x - 1, prev.y) ? prev : { ...prev, x: prev.x - 1 };
+            return collides(boardRef.current, prev.shape, prev.x - 1, prev.y) ? prev : { ...prev, x: prev.x - 1 };
           case 'ArrowRight':
-            return collides(board, prev.shape, prev.x + 1, prev.y) ? prev : { ...prev, x: prev.x + 1 };
+            return collides(boardRef.current, prev.shape, prev.x + 1, prev.y) ? prev : { ...prev, x: prev.x + 1 };
           case 'ArrowDown':
-            return collides(board, prev.shape, prev.x, prev.y + 1) ? prev : { ...prev, y: prev.y + 1 };
+            return collides(boardRef.current, prev.shape, prev.x, prev.y + 1) ? prev : { ...prev, y: prev.y + 1 };
           case 'ArrowUp': {
             const rotated = rotate(prev.shape);
-            return collides(board, rotated, prev.x, prev.y) ? prev : { ...prev, shape: rotated };
+            return collides(boardRef.current, rotated, prev.x, prev.y) ? prev : { ...prev, shape: rotated };
           }
           default: return prev;
         }
@@ -126,7 +128,7 @@ export default function Tetris() {
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [board, gameOver, running]);
+  }, [gameOver, running]);
 
   const restart = () => {
     setBoard(createBoard());

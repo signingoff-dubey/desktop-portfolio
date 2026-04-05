@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useWindows } from '../../context/WindowContext';
 import { useSettings } from '../../context/SettingsContext';
 
@@ -18,6 +18,10 @@ export default function Window({ id, title, isFocused, zIndex, position, size, c
   const [pos, setPos] = useState(position);
   const dragging = useRef(false);
   const offset = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    setPos(position);
+  }, [position]);
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     // Only drag from title bar
@@ -56,7 +60,8 @@ export default function Window({ id, title, isFocused, zIndex, position, size, c
   let windowStyle: React.CSSProperties = {
     pointerEvents: 'auto',
     zIndex,
-    width: size.width,
+    width: Math.min(size.width, typeof window !== 'undefined' ? window.innerWidth - 20 : size.width),
+    maxWidth: '100%',
     minHeight: 60,
     maxHeight: '85vh',
     display: 'flex',

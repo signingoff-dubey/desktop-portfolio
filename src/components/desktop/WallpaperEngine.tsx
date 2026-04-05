@@ -13,6 +13,7 @@ export default function WallpaperEngine() {
     if (!ctx) return;
 
     let animationId: number;
+    let timeoutId: number;
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -42,7 +43,9 @@ export default function WallpaperEngine() {
           }
           drops[i]++;
         }
-        animationId = requestAnimationFrame(draw);
+        timeoutId = window.setTimeout(() => {
+          animationId = requestAnimationFrame(draw);
+        }, 45); // ~22fps for classic matrix feel and lower CPU usage
       };
       draw();
     } else if (wallpaper === 'cyber-rain') {
@@ -51,7 +54,7 @@ export default function WallpaperEngine() {
         raindrops.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          speed: Math.random() * 5 + 5,
+          speed: Math.random() * 2.5 + 2.5,
           len: Math.random() * 20 + 20,
           color: Math.random() > 0.5 ? 'rgba(0, 255, 255, 0.8)' : 'rgba(255, 0, 255, 0.8)'
         });
@@ -76,7 +79,9 @@ export default function WallpaperEngine() {
             drop.x = Math.random() * canvas.width;
           }
         }
-        animationId = requestAnimationFrame(draw);
+        timeoutId = window.setTimeout(() => {
+          animationId = requestAnimationFrame(draw);
+        }, 33); // ~30fps
       };
       draw();
     } else if (wallpaper === 'geometry') {
@@ -86,12 +91,12 @@ export default function WallpaperEngine() {
         shapes.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 1.5,
-          vy: (Math.random() - 0.5) * 1.5,
+          vx: (Math.random() - 0.5) * 0.8,
+          vy: (Math.random() - 0.5) * 0.8,
           sides: Math.floor(Math.random() * 4) + 3, // 3 to 6 sides
           size: Math.random() * 30 + 20,
           rot: Math.random() * Math.PI * 2,
-          vrot: (Math.random() - 0.5) * 0.05,
+          vrot: (Math.random() - 0.5) * 0.02,
           color: colors[Math.floor(Math.random() * colors.length)]
         });
       }
@@ -124,7 +129,9 @@ export default function WallpaperEngine() {
           if (s.y < -s.size) s.y = canvas.height + s.size;
           if (s.y > canvas.height + s.size) s.y = -s.size;
         }
-        animationId = requestAnimationFrame(draw);
+        timeoutId = window.setTimeout(() => {
+          animationId = requestAnimationFrame(draw);
+        }, 33);
       };
       draw();
     } else if (wallpaper === 'pixel-clouds') {
@@ -143,7 +150,7 @@ export default function WallpaperEngine() {
         clouds.push({
           x: Math.random() * canvas.width,
           y: Math.random() * (canvas.height / 2),
-          speed: Math.random() * 0.5 + 0.2,
+          speed: Math.random() * 0.25 + 0.1,
           blocks
         });
       }
@@ -166,7 +173,9 @@ export default function WallpaperEngine() {
             c.y = Math.random() * (canvas.height / 2);
           }
         }
-        animationId = requestAnimationFrame(draw);
+        timeoutId = window.setTimeout(() => {
+          animationId = requestAnimationFrame(draw);
+        }, 33);
       };
       draw();
     } else if (wallpaper === 'starfield') {
@@ -189,7 +198,7 @@ export default function WallpaperEngine() {
         const cy = canvas.height/2;
         
         for (let i=0; i<numStars; i++) {
-          stars[i].z -= 2;
+          stars[i].z -= 1;
           if (stars[i].z <= 0) {
             stars[i].z = canvas.width;
             stars[i].x = Math.random() * canvas.width * 2 - canvas.width;
@@ -204,7 +213,9 @@ export default function WallpaperEngine() {
           ctx.arc(x, y, s, 0, Math.PI * 2);
           ctx.fill();
         }
-        animationId = requestAnimationFrame(draw);
+        timeoutId = window.setTimeout(() => {
+          animationId = requestAnimationFrame(draw);
+        }, 33);
       }
       draw();
     }
@@ -212,6 +223,7 @@ export default function WallpaperEngine() {
     return () => {
       window.removeEventListener('resize', resize);
       cancelAnimationFrame(animationId);
+      clearTimeout(timeoutId);
     };
   }, [wallpaper]);
 
@@ -246,7 +258,7 @@ export default function WallpaperEngine() {
   return (
     <canvas 
       ref={canvasRef} 
-      style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 0, pointerEvents: 'none' }}
+      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0, pointerEvents: 'none' }}
     />
   );
 }

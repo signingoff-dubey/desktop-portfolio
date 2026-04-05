@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useWindows } from '../../context/WindowContext';
 import { useSettings } from '../../context/SettingsContext';
 import StartMenu from './StartMenu';
-import { useViewCount } from '../../hooks/useViewCount';
+import { useViewCount } from '../../context/ViewCountContext';
 
 const TAB_LABELS: Record<string, string> = {
   terminal: 'TERM',

@@ -19,6 +19,7 @@ const WINDOW_CONFIGS: Record<string, { title: string; icon: string; defaultSize:
   contact:      { title: 'CONTACT.EXE', icon: '📧', defaultSize: { width: 400, height: 380 }, defaultPosition: { x: 200, y: 80 } },
   network:      { title: 'NETWORK_MONITOR.EXE', icon: '🌐', defaultSize: { width: 480, height: 400 }, defaultPosition: { x: 90, y: 50 } },
   minesweeper:  { title: 'MINESWEEPER.EXE', icon: '💣', defaultSize: { width: 280, height: 350 }, defaultPosition: { x: 150, y: 150 } },
+  gallery:      { title: 'IMAGE_GALLERY', icon: '🖼️', defaultSize: { width: 640, height: 480 }, defaultPosition: { x: 120, y: 70 } },
 };
 
 /**

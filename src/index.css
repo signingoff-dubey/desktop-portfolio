@@ -59,17 +59,17 @@ html[data-theme="matrix"] {
 }
 
 html[data-theme="vaporwave"] {
-  --color-bsod-blue: hsl(280, 100%, 15%);
-  --color-window-bg: hsl(280, 80%, 12%);
-  --color-phosphor-green: hsl(320, 100%, 65%);
-  --color-log-yellow: hsl(180, 100%, 60%);
-  --color-dark-blue: hsl(260, 100%, 8%);
-  --color-card-bg: hsl(280, 60%, 15%);
-  --color-taskbar-bg: hsl(300, 70%, 10%);
-  --color-title-bar: hsl(320, 80%, 40%);
-  --color-title-bar-inactive: hsl(280, 70%, 20%);
-  --color-border-light: hsl(320, 100%, 75%);
-  --color-border-dark: hsl(260, 100%, 4%);
+  --color-bsod-blue: hsl(280 100% 15%);
+  --color-window-bg: hsl(280 80% 12%);
+  --color-phosphor-green: hsl(320 100% 65%);
+  --color-log-yellow: hsl(180 100% 60%);
+  --color-dark-blue: hsl(260 100% 8%);
+  --color-card-bg: hsl(280 60% 15%);
+  --color-taskbar-bg: hsl(300 70% 10%);
+  --color-title-bar: hsl(320 80% 40%);
+  --color-title-bar-inactive: hsl(280 70% 20%);
+  --color-border-light: hsl(320 100% 75%);
+  --color-border-dark: hsl(260 100% 4%);
 }
 
 /* ===== GLOBAL RESETS ===== */
@@ -170,7 +170,7 @@ html[data-os="win11"] .crt-flicker {
 .win95-btn {
   width: 18px;
   height: 18px;
-  background: hsl(240 20% 75%);
+  background: var(--color-border-light);
   border: 1.5px solid;
   border-color: hsl(0 0% 95%) hsl(240 20% 30%) hsl(240 20% 30%) hsl(0 0% 95%);
   display: flex;
@@ -193,18 +193,18 @@ html[data-os="win11"] .crt-flicker {
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(240 100% 20%);
-  border-left: 1px solid hsl(240 60% 50%);
+  background: var(--color-dark-blue);
+  border-left: 1px solid var(--color-border-light);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(240 40% 55%);
+  background: var(--color-border-light);
   border: 1.5px solid;
-  border-color: hsl(240 40% 75%) hsl(240 40% 30%) hsl(240 40% 30%) hsl(240 40% 75%);
+  border-color: var(--color-border-light) var(--color-border-dark) var(--color-border-dark) var(--color-border-light);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(240 40% 65%);
+  background: var(--color-title-bar);
 }
 
 /* ===== BLINKING CURSOR ===== */
@@ -255,8 +255,8 @@ html[data-os="win11"] .crt-flicker {
 }
 
 .desktop-icon.selected {
-  background: rgba(0, 0, 168, 0.6);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: color-mix(in srgb, var(--color-title-bar) 60%, transparent);
+  border-color: var(--color-border-light);
 }
 
 /* ===== START MENU ===== */
@@ -307,25 +307,25 @@ html[data-os="win11"] .crt-flicker {
 }
 
 .taskbar-tab:hover {
-  background: hsl(240 100% 35%);
+  background: var(--color-title-bar);
 }
 
 .taskbar-tab.active {
-  border-color: hsl(240 100% 15%) hsl(240 60% 60%) hsl(240 60% 60%) hsl(240 100% 15%);
-  background: hsl(240 100% 33%);
+  border-color: var(--color-border-dark) var(--color-border-light) var(--color-border-light) var(--color-border-dark);
+  background: var(--color-card-bg);
 }
 
 /* ===== LANDING SCREEN ===== */
 .landing-card {
-  background: hsl(240 100% 28%);
-  border: 2px solid hsl(240 60% 50%);
-  box-shadow: 
+  background: var(--color-card-bg);
+  border: 2px solid var(--color-border-light);
+  box-shadow:
     inset 0 0 30px rgba(0, 0, 0, 0.3),
-    0 0 40px rgba(0, 0, 168, 0.4);
+    0 0 40px rgba(0, 0, 0, 0.3);
 }
 
 .landing-btn {
-  border: 1.5px solid hsl(240 60% 55%);
+  border: 1.5px solid var(--color-border-light);
   background: transparent;
   color: var(--color-phosphor-green);
   padding: 12px 32px;
@@ -376,11 +376,32 @@ html[data-os="win11"] .crt-flicker {
 
 /* ===== PROJECT CARD ===== */
 .project-card {
-  background: hsl(240 100% 25%);
-  border: 1.5px solid hsl(240 60% 50%);
+  background: var(--color-card-bg);
+  border: 1.5px solid var(--color-border-light);
   padding: 16px;
   cursor: pointer;
   transition: all 0.2s ease;
+}
+
+.project-card:hover {
+  background: var(--color-title-bar);
+  border-color: var(--color-phosphor-green);
+  box-shadow: 0 0 12px rgba(20, 255, 20, 0.1);
+}
+
+/* ===== REPO CARD (Network Monitor) ===== */
+.repo-card {
+  display: block;
+  text-decoration: none;
+  background: var(--color-dark-blue);
+  border: 1px solid var(--color-border-dark);
+  padding: 10px;
+  transition: background 0.2s;
+  color: inherit;
+}
+
+.repo-card:hover {
+  background: var(--color-title-bar);
 }
 
 .project-card:hover {
@@ -396,7 +417,7 @@ html[data-os="win11"] .crt-flicker {
   top: 0;
   bottom: 0;
   width: 2px;
-  background: hsl(240 60% 50%);
+  background: var(--color-border-light);
 }
 
 .timeline-dot {
@@ -411,9 +432,9 @@ html[data-os="win11"] .crt-flicker {
 
 /* ===== TOP BAR ===== */
 .top-bar {
-  background: rgba(0, 0, 100, 0.7);
+  background: color-mix(in srgb, var(--color-bsod-blue) 70%, transparent);
   backdrop-filter: blur(4px);
-  border-bottom: 1px solid hsl(240 60% 40%);
+  border-bottom: 1px solid var(--color-border-dark);
 }
 
 /* ===== ASCII ART ===== */

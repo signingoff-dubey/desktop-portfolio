@@ -5,7 +5,7 @@ import Taskbar from '../taskbar/Taskbar';
 import Clippy from '../clippy/Clippy';
 import ContextMenu from './ContextMenu';
 import WallpaperEngine from './WallpaperEngine';
-import { useViewCount } from '../../hooks/useViewCount';
+import { useViewCount } from '../../context/ViewCountContext';
 
 export default function Desktop() {
   const [contextMenu, setContextMenu] = useState<{x: number, y: number} | null>(null);
@@ -24,8 +24,8 @@ export default function Desktop() {
       className="crt-overlay"
       onContextMenu={handleContextMenu}
       style={{
-        width: '100vw',
-        height: '100vh',
+        width: '100%',
+        height: '100%',
         background: 'transparent',
         position: 'relative',
         overflow: 'hidden',
@@ -50,8 +50,8 @@ export default function Desktop() {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#14FF14', display: 'inline-block' }} />
-          <span style={{ color: '#14FF14' }}>Available for opportunities</span>
+          <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--color-phosphor-green)', display: 'inline-block' }} />
+          <span style={{ color: 'var(--color-phosphor-green)' }}>Available for opportunities</span>
         </div>
         <a
           href="https://linkedin.com/in/aryan-dubey-9b2271357/"

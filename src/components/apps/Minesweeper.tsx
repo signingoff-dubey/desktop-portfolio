@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 type CellValue = number | 'mine';
 type CellState = 'hidden' | 'revealed' | 'flagged';

@@ -17,4 +17,5 @@ export const desktopIcons: DesktopIconConfig[] = [
   { id: 'icon-timeline', label: 'Timeline', icon: '📅', appId: 'timeline' },
   { id: 'icon-network', label: 'Network', icon: '🌐', appId: 'network' },
   { id: 'icon-minesweeper', label: 'Minesweeper', icon: '💣', appId: 'minesweeper' },
+  { id: 'icon-gallery', label: 'Gallery', icon: '🖼️', appId: 'gallery' },
 ];

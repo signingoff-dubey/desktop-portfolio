@@ -71,10 +71,10 @@ export default function BootScreen({ onComplete }: Props) {
   return (
     <div
       style={{
-        width: '100vw',
-        height: '100vh',
-        background: 'black',
-        color: '#14FF14',
+        width: '100%',
+        height: '100%',
+        background: 'var(--color-bsod-blue)',
+        color: 'var(--color-phosphor-green)',
         fontFamily: "'VT323', monospace",
         fontSize: '18px',
         padding: '40px',
@@ -96,14 +96,14 @@ export default function BootScreen({ onComplete }: Props) {
             <div style={{ 
               width: '100%', 
               height: 24, 
-              border: '1px solid #14FF14', 
+              border: '1px solid var(--color-phosphor-green)', 
               padding: 2,
               marginBottom: 10 
             }}>
               <div style={{ 
                 width: `${progress}%`, 
                 height: '100%', 
-                background: '#14FF14',
+                background: 'var(--color-phosphor-green)',
                 transition: 'width 0.2s linear'
               }} />
             </div>

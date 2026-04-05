@@ -19,6 +19,7 @@ import Resume from '../apps/Resume';
 import Contact from '../apps/Contact';
 import NetworkMonitor from '../apps/NetworkMonitor';
 import Minesweeper from '../apps/Minesweeper';
+import Gallery from '../apps/Gallery';
 
 /* Lazy-loaded heavier apps */
 const Tetris = lazy(() => import('../apps/Tetris'));
@@ -40,6 +41,7 @@ const APP_MAP: Record<string, React.ComponentType> = {
   contact: Contact,
   network: NetworkMonitor,
   minesweeper: Minesweeper,
+  gallery: Gallery,
 };
 
 const LAZY_MAP: Record<string, React.LazyExoticComponent<React.ComponentType> | undefined> = {

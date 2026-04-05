@@ -17,9 +17,9 @@ export default function LandingScreen({ onEnter, onPlayTetris }: Props) {
     <div
       className="crt-overlay"
       style={{
-        width: '100vw',
-        height: '100vh',
-        background: 'hsl(240 100% 33%)',
+        width: '100%',
+        height: '100%',
+        background: 'var(--color-bsod-blue)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -28,7 +28,7 @@ export default function LandingScreen({ onEnter, onPlayTetris }: Props) {
       <div className="landing-card" style={{ padding: '48px 56px', maxWidth: 520, width: '90%', textAlign: 'center' }}>
         {/* ASCII Art Name */}
         <pre className="ascii-art" style={{
-          color: 'hsl(120 100% 54%)',
+          color: 'var(--color-phosphor-green)',
           fontSize: 'clamp(6px, 1.8vw, 9px)',
           lineHeight: 1.15,
           marginBottom: 24,

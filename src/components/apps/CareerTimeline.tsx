@@ -3,7 +3,7 @@ import { timeline } from '../../data/timeline';
 export default function CareerTimeline() {
   return (
     <div style={{ fontSize: 15, lineHeight: 1.5 }}>
-      <div style={{ color: 'hsl(120 100% 54%)', fontSize: 18, marginBottom: 20, display: 'flex', alignItems: 'center', gap: 8 }}>
+      <div style={{ color: 'var(--color-phosphor-green)', fontSize: 18, marginBottom: 20, display: 'flex', alignItems: 'center', gap: 8 }}>
         📅 CAREER TIMELINE
       </div>
 
@@ -20,17 +20,17 @@ export default function CareerTimeline() {
             />
 
             {/* Date */}
-            <div style={{ color: 'hsl(120 100% 54%)', fontSize: 13, marginBottom: 2 }}>
+            <div style={{ color: 'var(--color-phosphor-green)', fontSize: 13, marginBottom: 2 }}>
               {entry.icon} {entry.dateRange}
             </div>
 
             {/* Title */}
-            <div style={{ color: 'white', fontSize: 19, marginBottom: 2 }}>
+            <div style={{ color: 'var(--color-phosphor-white)', fontSize: 19, marginBottom: 2 }}>
               {entry.title}
             </div>
 
             {/* Org */}
-            <div style={{ color: 'hsl(0 0% 55%)', fontSize: 14 }}>
+            <div style={{ color: 'var(--color-phosphor-white)', opacity: 0.55, fontSize: 14 }}>
               {entry.organization}
             </div>
           </div>

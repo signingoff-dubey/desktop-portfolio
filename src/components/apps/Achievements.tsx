@@ -8,9 +8,9 @@ export default function Achievements() {
 
   if (selectedImage) {
     return (
-      <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 50, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
-        <button onClick={() => setSelectedImage(null)} style={{ alignSelf: 'flex-end', background: 'transparent', border: '1px solid hsl(0 70% 60%)', color: 'hsl(0 70% 60%)', padding: '4px 16px', cursor: 'pointer', fontFamily: "'VT323', monospace", fontSize: 16, marginBottom: 10 }}>[X] CLOSE IMAGE</button>
-        <img src={selectedImage} alt="Certificate Full" style={{ maxWidth: '100%', maxHeight: '85vh', objectFit: 'contain', border: '2px solid hsl(120 100% 54%)' }} />
+      <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 99999, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+        <button onClick={() => setSelectedImage(null)} style={{ position: 'fixed', top: 16, right: 16, background: 'transparent', border: '1px solid hsl(0 70% 60%)', color: 'hsl(0 70% 60%)', padding: '4px 16px', cursor: 'pointer', fontFamily: "'VT323', monospace", fontSize: 16, zIndex: 100000 }}>[X] CLOSE IMAGE</button>
+        <img src={selectedImage} alt="Certificate" style={{ maxWidth: '90vw', maxHeight: '90vh', objectFit: 'contain', border: '2px solid var(--color-phosphor-green)' }} />
       </div>
     );
   }
@@ -27,8 +27,8 @@ export default function Achievements() {
         <div
           key={i}
           style={{
-            background: 'hsl(240 100% 25%)',
-            border: '1px solid hsl(240 60% 45%)',
+            background: 'var(--color-dark-blue)',
+            border: '1px solid var(--color-border-dark)',
             padding: '10px 14px',
             marginBottom: 8,
             display: 'flex',
@@ -47,8 +47,8 @@ export default function Achievements() {
           </div>
           {h.image && (
             <div style={{ display: 'flex', gap: 10, marginTop: 10, flexWrap: 'wrap' }}>
-              <img src={h.image} alt="Hackathon" onClick={() => setSelectedImage(h.image!)} style={{ maxHeight: 120, border: '1px solid #555', cursor: 'pointer' }} />
-              {h.image2 && <img src={h.image2} alt="Hackathon Cert" onClick={() => setSelectedImage(h.image2!)} style={{ maxHeight: 120, border: '1px solid #555', cursor: 'pointer' }} />}
+              <img src={h.image} alt="Hackathon" onClick={() => setSelectedImage(h.image!)} style={{ maxHeight: 120, border: '1px solid var(--color-border-dark)', cursor: 'pointer' }} />
+              {h.image2 && <img src={h.image2} alt="Hackathon Cert" onClick={() => setSelectedImage(h.image2!)} style={{ maxHeight: 120, border: '1px solid var(--color-border-dark)', cursor: 'pointer' }} />}
             </div>
           )}
         </div>
@@ -67,7 +67,7 @@ export default function Achievements() {
           )}
           {c.image && (
             <div style={{ paddingLeft: 18, marginTop: 4 }}>
-              <img src={c.image} alt="Certification" onClick={() => setSelectedImage(c.image!)} style={{ maxHeight: 80, border: '1px solid #444', cursor: 'pointer' }} />
+              <img src={c.image} alt="Certification" onClick={() => setSelectedImage(c.image!)} style={{ maxHeight: 80, border: '1px solid var(--color-border-dark)', cursor: 'pointer' }} />
             </div>
           )}
         </div>

@@ -50,13 +50,13 @@ export default function NetworkMonitor() {
 
   return (
     <div style={{ fontSize: 13, display: 'flex', flexDirection: 'column', height: '100%', fontFamily: "'VT323', monospace" }}>
-      <div style={{ borderBottom: '1px solid hsl(240 60% 50%)', paddingBottom: 6, marginBottom: 12, display: 'flex', justifyContent: 'space-between' }}>
-        <span style={{ color: 'hsl(120 100% 54%)' }}>PING api.github.com (140.82.112.4)</span>
-        <span style={{ color: 'hsl(0 0% 65%)' }}>PORT: 443 [HTTPS]</span>
+      <div style={{ borderBottom: '1px solid var(--color-border-light)', paddingBottom: 6, marginBottom: 12, display: 'flex', justifyContent: 'space-between' }}>
+        <span style={{ color: 'var(--color-phosphor-green)' }}>PING api.github.com (140.82.112.4)</span>
+        <span style={{ color: 'var(--color-phosphor-white)' }}>PORT: 443 [HTTPS]</span>
       </div>
 
       <div style={{ flex: 1, overflowY: 'auto' }}>
-        {loading && <div className="cursor-blink" style={{ color: 'hsl(60 100% 50%)' }}>Establishing secure connection...</div>}
+        {loading && <div className="cursor-blink" style={{ color: 'var(--color-log-yellow)' }}>Establishing secure connection...</div>}
         
         {error && <div style={{ color: 'hsl(0 100% 60%)' }}>[ERROR] PACKET LOSS: {error}</div>}
 
@@ -68,26 +68,17 @@ export default function NetworkMonitor() {
                 href={r.html_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{
-                  display: 'block',
-                  textDecoration: 'none',
-                  background: 'hsl(240 100% 22%)',
-                  border: '1px solid hsl(240 60% 45%)',
-                  padding: 10,
-                  transition: 'background 0.2s',
-                  color: 'inherit'
-                }}
-                onMouseOver={(e) => e.currentTarget.style.background = 'hsl(240 100% 30%)'}
-                onMouseOut={(e) => e.currentTarget.style.background = 'hsl(240 100% 22%)'}
+                className="repo-card"
+                style={{ padding: 10 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <span style={{ color: 'white', fontSize: 15 }}>{r.name}</span>
-                  <span style={{ color: 'hsl(60 100% 50%)' }}>★ {r.stargazers_count}   ⑂ {r.forks_count}</span>
+                  <span style={{ color: 'var(--color-phosphor-white)', fontSize: 15 }}>{r.name}</span>
+                  <span style={{ color: 'var(--color-log-yellow)' }}>★ {r.stargazers_count}   ⑂ {r.forks_count}</span>
                 </div>
-                <div style={{ color: 'hsl(0 0% 70%)', marginBottom: 6, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                <div style={{ color: 'var(--color-phosphor-white)', marginBottom: 6, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                   {r.description || 'No description provided.'}
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', color: 'hsl(120 100% 54%)', fontSize: 11 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--color-phosphor-green)', fontSize: 11 }}>
                   <span>{r.language || 'Mixed'}</span>
                   <span>UPDATED: {new Date(r.updated_at).toLocaleDateString()}</span>
                 </div>

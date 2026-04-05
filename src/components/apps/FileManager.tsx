@@ -16,7 +16,7 @@ export default function FileManager() {
   return (
     <div style={{ fontSize: 14 }}>
       <div style={{ color: 'hsl(120 100% 54%)', marginBottom: 8 }}>
-        C:\Users\Praveen\Portfolio\
+        C:\Users\Kabir\Portfolio\
       </div>
 
       {/* Header */}
@@ -44,8 +44,8 @@ export default function FileManager() {
             cursor: 'pointer',
             color: f.type === 'DIR' ? 'hsl(60 100% 50%)' : 'hsl(0 0% 85%)',
           }}
-          onMouseEnter={e => (e.currentTarget.style.background = 'hsl(240 100% 35%)')}
-          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+            onMouseEnter={e => (e.currentTarget.style.background = 'var(--color-title-bar)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
         >
           <span>{f.type === 'DIR' ? '📁 ' : '📄 '}{f.name}</span>
           <span style={{ color: 'hsl(0 0% 55%)' }}>{f.size}</span>
