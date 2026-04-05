@@ -23,16 +23,20 @@ export default function Window({ id, title, isFocused, zIndex, position, size, c
     setPos(position);
   }, [position]);
 
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
     // Only drag from title bar
     const target = e.target as HTMLElement;
     if (target.closest('.win95-btn')) return;
+
+    if (target.hasPointerCapture(e.pointerId)) {
+      target.releasePointerCapture(e.pointerId);
+    }
 
     dragging.current = true;
     offset.current = { x: e.clientX - pos.x, y: e.clientY - pos.y };
     focusWindow(id);
 
-    const handleMove = (ev: MouseEvent) => {
+    const handleMove = (ev: PointerEvent) => {
       if (!dragging.current) return;
       const newX = ev.clientX - offset.current.x;
       const newY = ev.clientY - offset.current.y;
@@ -45,29 +49,39 @@ export default function Window({ id, title, isFocused, zIndex, position, size, c
         updatePosition(id, prev.x, prev.y);
         return prev;
       });
-      document.removeEventListener('mousemove', handleMove);
-      document.removeEventListener('mouseup', handleUp);
+      document.removeEventListener('pointermove', handleMove);
+      document.removeEventListener('pointerup', handleUp);
+      document.removeEventListener('pointercancel', handleUp);
     };
 
-    document.addEventListener('mousemove', handleMove);
-    document.addEventListener('mouseup', handleUp);
+    document.addEventListener('pointermove', handleMove);
+    document.addEventListener('pointerup', handleUp);
+    document.addEventListener('pointercancel', handleUp);
   }, [pos, id, focusWindow, updatePosition]);
 
   // ----- Conditional Styles for Engine -----
   const isMac = osStyle === 'mac';
   const isWin11 = osStyle === 'win11';
 
+  const vw = typeof window !== 'undefined' ? window.innerWidth : 1000;
+  const vh = typeof window !== 'undefined' ? window.innerHeight : 1000;
+  const isMobile = vw <= 768;
+
+  const safeWidth = isMobile ? vw - 10 : Math.min(size.width, vw - 20);
+  const renderX = isMobile ? Math.max(5, Math.min(pos.x, vw - safeWidth - 5)) : pos.x;
+  const renderY = isMobile ? Math.max(32, Math.min(pos.y, vh - 60)) : pos.y;
+
   let windowStyle: React.CSSProperties = {
     pointerEvents: 'auto',
     zIndex,
-    width: Math.min(size.width, typeof window !== 'undefined' ? window.innerWidth - 20 : size.width),
+    width: safeWidth,
     maxWidth: '100%',
     minHeight: 60,
-    maxHeight: '85vh',
+    maxHeight: isMobile ? vh - 80 : '85vh',
     display: 'flex',
     flexDirection: 'column',
-    left: pos.x,
-    top: pos.y,
+    left: renderX,
+    top: renderY,
   };
 
   if (isMac) {
@@ -79,7 +93,7 @@ export default function Window({ id, title, isFocused, zIndex, position, size, c
   let titleBarContent;
   if (isMac) {
     titleBarContent = (
-      <div className={`win95-title-bar ${!isFocused ? 'inactive' : ''}`} onMouseDown={handleMouseDown} style={{ cursor: 'move', background: 'transparent', color: 'white', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'center', position: 'relative', height: 28 }}>
+      <div className={`win95-title-bar ${!isFocused ? 'inactive' : ''}`} onPointerDown={handlePointerDown} style={{ touchAction: 'none', cursor: 'move', background: 'transparent', color: 'white', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'center', position: 'relative', height: 28 }}>
         <div style={{ position: 'absolute', left: 12, top: 8, display: 'flex', gap: 8 }}>
           <button onClick={(e) => { e.stopPropagation(); closeWindow(id); }} style={{ width: 12, height: 12, borderRadius: '50%', background: '#ff5f56', border: '1px solid #e0443e', cursor: 'pointer' }} />
           <button onClick={(e) => { e.stopPropagation(); minimizeWindow(id); }} style={{ width: 12, height: 12, borderRadius: '50%', background: '#ffbd2e', border: '1px solid #dea123', cursor: 'pointer' }} />
@@ -90,7 +104,7 @@ export default function Window({ id, title, isFocused, zIndex, position, size, c
     );
   } else if (isWin11) {
     titleBarContent = (
-      <div className={`win95-title-bar ${!isFocused ? 'inactive' : ''}`} onMouseDown={handleMouseDown} style={{ cursor: 'move', background: 'transparent', color: 'white', display: 'flex', justifyContent: 'space-between', padding: '0 0 0 12px', height: 32 }}>
+      <div className={`win95-title-bar ${!isFocused ? 'inactive' : ''}`} onPointerDown={handlePointerDown} style={{ touchAction: 'none', cursor: 'move', background: 'transparent', color: 'white', display: 'flex', justifyContent: 'space-between', padding: '0 0 0 12px', height: 32 }}>
         <span style={{ fontSize: 12, alignSelf: 'center', opacity: isFocused ? 1 : 0.5 }}>{title}</span>
         <div style={{ display: 'flex' }}>
           <button onClick={(e) => { e.stopPropagation(); minimizeWindow(id); }} style={{ padding: '0 16px', background: 'transparent', border: 'none', color: 'white', cursor: 'pointer', transition: 'background 0.2s' }}>─</button>
@@ -101,7 +115,7 @@ export default function Window({ id, title, isFocused, zIndex, position, size, c
   } else {
     // Standard Retro
     titleBarContent = (
-      <div className={`win95-title-bar ${!isFocused ? 'inactive' : ''}`} onMouseDown={handleMouseDown} style={{ cursor: 'move' }}>
+      <div className={`win95-title-bar ${!isFocused ? 'inactive' : ''}`} onPointerDown={handlePointerDown} style={{ touchAction: 'none', cursor: 'move' }}>
         <span className="title-text">{title}</span>
         <div style={{ display: 'flex', gap: 4 }}>
           <button className="win95-btn" onClick={(e) => { e.stopPropagation(); minimizeWindow(id); }} aria-label="Minimize">-</button>
@@ -115,7 +129,7 @@ export default function Window({ id, title, isFocused, zIndex, position, size, c
     <div
       className={isMac || isWin11 ? "absolute" : "win95-window absolute"}
       style={windowStyle}
-      onMouseDown={() => focusWindow(id)}
+      onPointerDown={() => focusWindow(id)}
     >
       {titleBarContent}
       {/* Content */}
