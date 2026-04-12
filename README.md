@@ -14,7 +14,7 @@
 
 ---
 
-LINK : kabir-aryan-portfolio.netlify.app
+LINK : https://kabir-aryan-portfolio.netlify.app
 
 ---
 
