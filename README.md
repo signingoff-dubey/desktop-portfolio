@@ -1,6 +1,6 @@
 <div align="center">
 
-# 💻 KABIR-OS v1.0
+# 💻 KABIR-OS v2.0
 ### Interactive Retro Developer Portfolio
 
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)](https://react.dev)
@@ -11,6 +11,10 @@
 *A fully functional retro operating system — running entirely in your browser.*
 
 </div>
+
+---
+
+LINK : kabir-aryan-portfolio.netlify.app
 
 ---
 
